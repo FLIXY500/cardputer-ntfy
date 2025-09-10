@@ -3,6 +3,8 @@ A simple way to monitor ntfy.sh topics on M5 Cardputer. Designed as a way to mon
 
 Install via M5Burner. 
 
+** SD CARD REQUIRED ** Yes this app saves alert text to a file on SD card and it is required.
+
 **SD images: ** The optional SD card images should be copied manually to your SD card root directory, but cardputer ntfy will use ASCII art if they are not found.
 
 ![cardputer ntfy oboi-dlp](cardputer-ntfy-oboi1.jpeg)
