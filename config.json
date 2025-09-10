@@ -1,0 +1,13 @@
+{
+  "name": "Cardputer ntfy Pager",
+  "version": "1.0.0",
+  "description": "Receive nyfy notifications on your Cardputer",
+  "category": "Tools",
+  "platform": "M5Cardputer",
+  "author": "Scot Forshaw",
+  "url": "https://github.com/forshaws/cardputer-ntfy",
+  "bin": "firmware.bin",
+  "icon": "icon.jpg",
+  "need_sd": true,
+  "data_path": "/"
+}
