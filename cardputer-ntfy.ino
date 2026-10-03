@@ -42,6 +42,7 @@ String inputBuffer = "";
 bool enteringSSID = false;
 bool enteringPASS = false;
 bool enteringTopic = false;
+bool sendingMsg = false;
 
 // ---------- SD init ----------
 bool initSD() {
@@ -159,6 +160,7 @@ void drawMenu() {
   M5Cardputer.Display.println("(B) Set Topic");
   M5Cardputer.Display.println("(C) Start Monitoring");
   M5Cardputer.Display.println("(P) Set Password");
+  M5Cardputer.Display.println("(S) Send Message");
   M5Cardputer.Display.println("");
   M5Cardputer.Display.print("Topic: "); M5Cardputer.Display.println(topic);
   M5Cardputer.Display.print("WiFi: "); M5Cardputer.Display.println(wifiSSID.length()? wifiSSID:"<not set>");
@@ -217,6 +219,38 @@ String extractMessageId(const String &payload) {
     return "";
 }
 
+// ---------- Publish (send) to ntfy ----------
+bool publishMessage(const String &theTopic, const String &message) {
+  WiFiClientSecure client;
+  client.setInsecure();
+
+  HTTPClient http;
+  http.setTimeout(10000);
+  String url = "https://ntfy.sh/" + theTopic;
+
+  if (!http.begin(client, url)) return false;
+  http.addHeader("Content-Type", "text/plain");
+  int code = http.POST(message);
+  http.end();
+  return code == 200;
+}
+
+void sendMessageFlow() {
+  M5Cardputer.Display.clear();
+  M5Cardputer.Display.setCursor(0, 0);
+  M5Cardputer.Display.setTextSize(2);
+  M5Cardputer.Display.setTextColor(WHITE);
+  M5Cardputer.Display.println("Send Message");
+  M5Cardputer.Display.setTextSize(1);
+  M5Cardputer.Display.print("To topic: "); M5Cardputer.Display.println(topic);
+  M5Cardputer.Display.println("");
+  M5Cardputer.Display.println("Type message, Enter=send, X=cancel");
+  M5Cardputer.Display.println("");
+  M5Cardputer.Display.print("> ");
+
+  inputBuffer = "";
+  sendingMsg = true;
+}
 
 void monitorTopic() {
     unsigned long connectionStartTime = millis();
@@ -416,6 +450,7 @@ void setup() {
     M5Cardputer.Display.println("");
     M5Cardputer.Display.println("         Data Leak Protection");
     M5Cardputer.Display.println("          By Scot D Forshaw");
+    M5Cardputer.Display.println("          Fork by Flixy500 ");
   }
     delay(3000);
 
@@ -424,49 +459,4 @@ void setup() {
 void loop() {
   M5Cardputer.update();
 
-  if (M5Cardputer.Keyboard.isChange() && M5Cardputer.Keyboard.isPressed()) {
-    auto status = M5Cardputer.Keyboard.keysState();
-
-    if (enteringSSID || enteringPASS || enteringTopic) {
-      bool changed = false;
-
-      for (auto c : status.word) {
-        inputBuffer += c;
-        changed = true;
-      }
-      if (status.del && inputBuffer.length() > 0) {
-        inputBuffer.remove(inputBuffer.length() - 1);
-        changed = true;
-      }
-
-      if (status.enter) {
-        if (enteringSSID) wifiSSID = inputBuffer;
-        else if (enteringPASS) wifiPASS = inputBuffer;
-        else if (enteringTopic) topic = inputBuffer;
-
-        saveConfig();
-        enteringSSID = enteringPASS = enteringTopic = false;
-        inputBuffer = "";
-        drawMenu();
-        return;
-      }
-
-      // Only redraw when something actually changed
-      if (changed) {
-        String prompt = enteringSSID ? "Enter SSID" :
-                        enteringPASS ? "Enter PASS" :
-                                       "Enter Topic";
-        drawInputUI(prompt);
-      }
-      return;
-    }
-
-    // Normal menu key handling
-    for (auto c : status.word) {
-      if (c == 'a' || c == 'A') { enteringSSID = true; inputBuffer = ""; drawInputUI("Enter SSID"); }
-      if (c == 'b' || c == 'B') { enteringTopic = true; inputBuffer = ""; drawInputUI("Enter Topic"); }
-      if (c == 'c' || c == 'C') { monitorTopic(); drawMenu(); }
-      if (c == 'p' || c == 'P') { enteringPASS = true; inputBuffer = ""; drawInputUI("Enter PASS"); }
-    }
-  }
-}
+  if (M5Cardputer.Keyboard.isChange
