@@ -1,33 +1,56 @@
 # cardputer-ntfy
-A simple way to monitor ntfy.sh topics on M5 Cardputer. Designed as a way to monitor server data leak notifications from oboi-dlp but the user can easily set the ntfy topic in the under interface and use as a ntfy pager for any topic
 
-Install via M5Burner. 
+A simple way to monitor and send messages to ntfy.sh topics on M5 Cardputer. Designed as a way to monitor server data leak notifications from oboi-dlp but the user can easily set the ntfy topic in the interface and use as an ntfy pager for any topic.
 
-** SD CARD REQUIRED ** Yes this app saves alert text to a file on SD card and it is required.
+**SD CARD REQUIRED** — Yes, this app saves alert text to a file on SD card and it is required.  
+**SD images** — The optional SD card images should be copied manually to your SD card root directory, but cardputer ntfy will use ASCII art if they are not found.
 
-**SD images: ** The optional SD card images should be copied manually to your SD card root directory, but cardputer ntfy will use ASCII art if they are not found.
+Install via M5Burner.
 
-![cardputer ntfy oboi-dlp](cardputer-ntfy-oboi1.jpeg)
+## Features
 
-![cardputer ntfy oboi-dlp](cardputer-ntfy-oboi2.jpeg)
+- **Receive alerts** — Polls an ntfy topic via SSE and displays new notifications
+- **Send messages** — Press **S** to compose and send a message to the configured topic
+- **Append alerts** to `/alerts.txt` on SD card, keeping the last 20
+- **Beep** on new alert
+- **Save/load settings** to `/oboi.cfg` on SD — no need to re-enter every time
 
-![cardputer ntfy oboi-dlp](cardputer-ntfy-oboi3.jpeg)
+## Fork
 
-![cardputer ntfy oboi-dlp](cardputer-ntfy-oboi4.jpeg)
+Forked by Flixy500
 
-## Instructions
+## Menu
 
-The app is super simple. Turn on, choose option A, set your SSID, B, set your ntfy topic and P, enter your WiFi password. 
+Press keys on the main screen:
 
-Once connected the app will create the configuration on your SD card and you wont need to enter again.
+| Key | Action |
+|-----|--------|
+| A   | Connect WiFi |
+| B   | Set Topic |
+| C   | Start Monitoring |
+| P   | Set Password |
+| S   | Send Message |
 
-The notifications are saved to SD card as alerts.txt. For now only 20 alerts are saved then the file cycles.
+While monitoring, press **X** to exit back to the menu.
 
-For suggestions and comments please use the issues and discussions in Github.
+## Send Message
 
-Thanks
-Scot
+Press **S** on the main screen to enter send mode. The app connects to the configured topic and lets you type a message. Press **Enter** to send, **X** to cancel. The send uses the same topic you're monitoring by default — change the topic via **B** first if you want to send elsewhere.
 
-Buy me a coffee at well... buy me a coffee... :) 
+## Installing
 
+1. Copy the `.bin` file to M5Burner and flash to your Cardputer
+2. Insert an SD card
+3. Turn on the Cardputer — set your **SSID** (A), **WiFi password** (P), and **ntfy topic** (B)
+4. Press **C** to start monitoring
 
+## File Structure on SD
+
+- `/oboi.cfg` — saved credentials and topic
+- `/alerts.txt` — alert history (last 20 entries, circular buffer)
+
+## Credits
+Fork by Flixy500
+By Scot D Forshaw
+
+Buy him a coffee :)
